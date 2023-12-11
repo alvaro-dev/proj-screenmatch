@@ -36,11 +36,11 @@ public class Principal {
         temporadas.forEach(System.out::println);
 
         temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
-//
-//        List<DadosEpisodio> dadosEpisodios = temporadas.stream()
-//                .flatMap(t -> t.episodios().stream())
-//                .collect(Collectors.toList());
-//
+
+        List<DadosEpisodio> dadosEpisodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream())
+                .collect(Collectors.toList());
+
 //        System.out.println("\n Top 10 episódios");
 //        dadosEpisodios.stream()
 //                .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
@@ -60,17 +60,17 @@ public class Principal {
 
         episodios.forEach(System.out::println);
 
-        System.out.println("Digite um trecho do título do episódio");
-        var trechoTitulo = leitura.nextLine();
-        Optional<Episodio> episodioBuscado = episodios.stream()
-                .filter(e -> e.getTitulo().toLowerCase().contains(trechoTitulo.toLowerCase()))
-                .findFirst();
-        if(episodioBuscado.isPresent()){
-            System.out.println("Episódio encontrado!");
-            System.out.println("Temporada: " + episodioBuscado.get().getTemporada());
-        } else {
-            System.out.println("Episódio não encontrado!");
-        }
+//        System.out.println("Digite um trecho do título do episódio");
+//        var trechoTitulo = leitura.nextLine();
+//        Optional<Episodio> episodioBuscado = episodios.stream()
+//                .filter(e -> e.getTitulo().toLowerCase().contains(trechoTitulo.toLowerCase()))
+//                .findFirst();
+//        if(episodioBuscado.isPresent()){
+//            System.out.println("Episódio encontrado!");
+//            System.out.println("Temporada: " + episodioBuscado.get().getTemporada());
+//        } else {
+//            System.out.println("Episódio não encontrado!");
+//        }
 
 //        System.out.println("Informa ano para busca de episódios:");
 //        var ano = leitura.nextInt();
@@ -88,5 +88,19 @@ public class Principal {
 //                                " Data lançamento: " + e.getDataLancamento().format(formatador)
 //                ));
 
+        Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
+                .filter(e -> e.getAvaliacao() > 0.0)
+                .collect(Collectors.groupingBy(Episodio::getTemporada,
+                        Collectors.averagingDouble(Episodio::getAvaliacao)));
+        System.out.println(avaliacoesPorTemporada);
+
+        DoubleSummaryStatistics est = episodios.stream()
+                .filter(e -> e.getAvaliacao() > 0.0)
+                .collect(Collectors.summarizingDouble(Episodio::getAvaliacao));
+        System.out.println(est);
+        System.out.println("Média: " + est.getAverage());
+        System.out.println("Melhor episódio: " + est.getMax());
+        System.out.println("Pior episódio: " + est.getMin());
+        System.out.println("Quantidade: " + est.getCount());
     }
 }
