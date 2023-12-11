@@ -3,6 +3,7 @@ package br.com.teste.screenmatch.principal;
 import br.com.teste.screenmatch.model.DadosEpisodio;
 import br.com.teste.screenmatch.model.DadosSerie;
 import br.com.teste.screenmatch.model.DadosTemporada;
+import br.com.teste.screenmatch.model.Episodio;
 import br.com.teste.screenmatch.service.ConsumoApi;
 import br.com.teste.screenmatch.service.ConverteDados;
 
@@ -45,5 +46,11 @@ public class Principal {
                 .limit(5)
                 .forEach(System.out::println);
 
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream()
+                        .map(d -> new Episodio(t.numero(), d))
+                ).collect(Collectors.toList());
+
+        episodios.forEach(System.out::println);
     }
 }
